@@ -1,0 +1,225 @@
+
+#### Load libraries: ####
+
+# 
+# - **gridExtra**
+# - **janitor** 
+# - **kableExtra** 
+# - **inspectdf**
+# - **skimr**
+# - **tidyverse**
+
+
+
+```{r setup,  include=FALSE}  
+
+# load libraries as needed:
+
+library(gridExtra)
+library(janitor)
+library(kableExtra)
+library(inspectdf)
+library(skimr)
+
+library(tidyverse)
+```
+
+
+
+
+#### Data - Penguins ####
+
+# Import the data set
+
+
+**Import the data set from a .csv file on Allison Horts' gitub site:**
+
+df_penguins <- read.csv("https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/data-raw/penguins_raw.csv", header=TRUE, stringsAsFactors=FALSE);
+
+
+
+
+# **Make Sure that the import went well**
+
+- **Is the created object a data frame?**
+  - **What are the row/column counts? (what did you expect?)**
+  - **What are the column types?  (Numeric/Character/Dates as expected)**
+  <br>
+  <br>
+  
+  ```{r import_check_quality_1, echo=TRUE}
+options(width = 80)
+
+print(class(df_penguins))
+print(dim(df_penguins))
+
+
+```
+
+# **Find the type of each column**
+
+**This code produces a nice table:**
+  
+  ```{r import_check_quality_2, echo=TRUE}
+
+
+# From:  https://stackoverflow.com/questions/40306280/how-to-transpose-a-dataframe-in-tidyverse
+
+df_column_types <- lapply(df_penguins, class) %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column() %>%  
+  pivot_longer(-rowname) %>% 
+  pivot_wider(names_from=rowname, values_from=value) %>%
+  rename("Column_Name" = "name", "Column_Type" = "1")
+
+
+
+
+gridExtra::grid.table(df_column_types)
+
+```
+
+# **Find out what data you have - by column**
+
+
+- **List unique values and counts for each column**
+  - **List missing value counts**
+  
+  #### This is where skimr comes in, rather than the standard summary commands available in R:
+  
+  
+  # **Skimr - character variables:**
+  
+  ```{r skimr_character, echo=TRUE }
+options(width = 100)
+
+df_penguins %>%  
+  dplyr::select_if(is.character) %>% 
+  skim()
+
+
+
+```
+
+
+
+# **Skimr - numeric variables:**
+
+```{r skimr_numeric, echo=TRUE}
+
+df_penguins %>% 
+  dplyr::select_if(is.numeric) %>% 
+  skim()
+
+```
+
+
+# **Skimr handles grouped data:**
+
+```{r skimr_numeric_grouped, echo=TRUE}
+
+df_penguins %>%  
+  dplyr::group_by(studyName) %>% 
+  dplyr::select_if(is.numeric) %>% 
+  skim()
+
+```
+
+
+# **Other Features:**
+
+- **Behaves nicely in pipelines (i.e, feed results into other operations)**
+  - **Specify statistics and classes, using 'skim_with()**
+- **skimr handles a variety of data types (e.g., character, factor, date,...)**
+<br>
+<br>
+**See references for more details**
+
+
+# **Inspectdf:**
+<br>
+**This has a number of functions. Here, we will just show the missing data plot function, using inspect_na():**
+
+```{r inspectdf_missing, echo=TRUE}
+
+df_penguins %>%  
+  dplyr::select_if(is.numeric) %>% 
+  inspect_na() %>% 
+  show_plot()
+
+
+```
+
+# **DataExplorer**
+
+**This packages has many features, and I will just show three:**
+
+- **missing value plot:**
+- **Boxplot matrix**
+- **Corelation plot**
+<br>
+**Missing value plot:**
+```{r DataExplorer_missing, echo=TRUE}
+
+df_penguins %>%  
+  dplyr::select_if(is.numeric) %>% 
+  DataExplorer::plot_missing() 
+
+
+```
+<br>
+**Boxplot:**
+```{r DataExplorer_boxplot, echo=TRUE}
+
+df_penguins %>%  
+  DataExplorer::plot_boxplot(by='studyName')
+
+
+```
+
+
+<br>
+**Correlation Plot:**
+```{r DataExplorer_correlation_plot, echo=TRUE}
+
+df_penguins %>% 
+  dplyr::select_if(is.numeric) %>% 
+  DataExplorer::plot_correlation(
+    cor_args = list( 'use' = 'complete.obs')
+    )
+
+
+```
+
+# **Conclusion:**
+
+<br>
+**These three packages will automate a lot of EDA functions, 
+and offer the ability to customize and pipeline their functions.
+They are superior to the standard R methods.**
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+# **Questions?**
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+# **References:**
+
+<br>
+**'rOpenSci: The skimr package' (https://docs.ropensci.org/skimr/index.html)**
+<br>**'Display a Beautiful Summary Statistics in R using Skimr Package' (https://www.datanovia.com/en/blog/display-a-beautiful-summary-statistics-in-r-using-skimr-package/)**
+<br>
+**'inspectdf' (https://alastairrushworth.github.io/inspectdf/)**
+<br>
+**'Explore Your Dataset in R' (https://www.littlemissdata.com/blog/simple-eda)**
+<br>
+**'How to Automate EDA with DataExplorer in R' (https://www.programmingwithr.com/how-to-automate-eda-with-dataexplorer-in-r/)**

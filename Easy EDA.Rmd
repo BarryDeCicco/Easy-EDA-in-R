@@ -1,0 +1,70 @@
+---
+title: "Easy EDA in R"
+author: "Barry DeCicco"
+date: "6/10/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# library(tabyl)   tabyl is a function within janitor
+library(janitor)
+library(inspectdf)
+library(skimr)
+
+library(tidyverse)
+```
+
+
+```{r import_big_city_health_data, include=FALSE}
+# df_health <- read.csv("https://query.data.world/s/t2obfytkhpqy5sygr4s4vftxjobmy6", header=TRUE, stringsAsFactors=FALSE);
+```
+
+```{r import_diamond_data, include=FALSE}
+# df_diamonds <- read.csv("https://raw.githubusercontent.com/tidyverse/ggplot2/master/data-raw/diamonds.csv", header=TRUE, stringsAsFactors=FALSE);
+```
+
+
+```{r import_penguin_data, include=FALSE}
+# df_penguins <- read.csv("https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/data-raw/penguins_raw.csv", header=TRUE, stringsAsFactors=FALSE);
+```
+
+
+
+```{r types_head_tail, echo = TRUE}
+
+# head(df_penguins)
+# tail(df_penguins)
+
+
+```
+
+
+
+
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
